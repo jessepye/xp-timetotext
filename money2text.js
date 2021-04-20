@@ -3,11 +3,8 @@
 function money2text (money) {
   let moneyString = "";
 
-  // 1234567.00
-  // number of digits: 
-    // 1,2,3 - hundreds 
-    // 4,5,6 - thousands
-    // 7,8,9 - millions
+
+
   let placeValue = money.length;
 
   let readDigit = (digit) => {
@@ -31,7 +28,6 @@ function money2text (money) {
     }else if (digit === "9") {
       result += "nine";
     }
-
     return result;
   }
 
@@ -44,8 +40,8 @@ function money2text (money) {
     }
 
     if (digits.length !== 3) {
-      console.log("length -> ", digits.length)
-      return 
+      console.log("incorrect length passed to readThree -> ", digits.length)
+      return
     }
 
     if (digits[0] !== "0") {
@@ -56,7 +52,7 @@ function money2text (money) {
     if (result.length > 0 && (digits[1] !== "0" || digits[2] !== "0") ){
       result += " and ";
     }
-    
+
     // 10 - 19
     if (digits.substring(1,3) === "10") {
       result +=  "ten"
@@ -79,7 +75,7 @@ function money2text (money) {
     }else if (digits.substring(1,3) === "19") {
       result +=  "nineteen"
     }
-     
+
     if (digits[1] === "2") {
       result += "twenty"
     } else if (digits[1] === "3") {
@@ -96,42 +92,69 @@ function money2text (money) {
       result += "eighty"
     } else if (digits[1] === "9") {
       result += "ninety"
-    } 
+    }
 
-    if (digits[1] !== "0" && digits[2] !=="0") {
+    if (digits[1] !== "0" && digits[1] !== "1" && digits[2] !=="0") {
       result += " ";
     }
 
     if (digits[2] !== "0" && digits[1] !== "1") {
       result += readDigit(digits[2]);
     }
-    
 
     return result;
-
   }
 
+  let cents = money.substring(money.length - 2);
+  let wholeDollars = money.substring(0, money.length - 3);
+  placeValue -= 3;
+  if (placeValue >= 0 && placeValue < 4) {
+    moneyString += readThree(wholeDollars);
+  } else if (placeValue >= 4 && placeValue < 7) {
+    moneyString += readThree(wholeDollars.substring(0, wholeDollars.length - 3)) + " thousand";
+    let finalThree = readThree(wholeDollars.substring(wholeDollars.length - 3));
+    if (finalThree) {
+      moneyString += " " + finalThree;
+    }
+  } else if (placeValue >= 7 && placeValue < 10) {
+    moneyString += readThree(wholeDollars.substring(0, wholeDollars.length - 6)) + " million";
+    let thousands = wholeDollars.substring(wholeDollars.length - 6, wholeDollars.length - 3);
+    if (thousands !== "000") {
+      moneyString += " " + readThree(thousands) + " thousand";
+    }
+    let finalThree = readThree(wholeDollars.substring(wholeDollars.length - 3));
+    if (finalThree) {
+      moneyString += " " + finalThree;
+    }
+  }
 
-  
-
-  moneyString += readThree(money)
+  moneyString += " dollars";
+  if(cents != "00") {
+    moneyString += " and " +readThree(cents) + " cents";
+  }
   return moneyString;
-
-
 }
 
-for (let i = 0; i < 1000; i++ ) {
-  console.log(money2text(i + "")); 
-}
+  // 1234567.00
+  // number of digits:
+    // 1,2,3 - hundreds
+    // 4,5,6 - thousands
+    // 7,8,9 - millions
 
-// nine hundred and (all the hundreds )
-// 910 - 919 -> ten , eleven .. 
+  // 1400
+  // readThree(1) + thousand + readThree(400)
 
+  // 23456789
+  // readThree(123) + million + readThree(456) + thousand + readThree(789)
 
 // {"amount":"745.00","text":"seven hundred and fourty five dollars"},
 //  {"amount":"645.00","text":"six hundred and fourty five dollars"}, **
-//  {"amount":"255.00","text":"two hundred and fifty five dollars"}, ** 
+//  {"amount":"255.00","text":"two hundred and fifty five dollars"}, **
 //  {"amount":"55.55","text":"fifty five dollars and fifty five cents"},
 //  {"amount":"7000.55","text":"seven thousand dollars and fifty five cents"}
+
+// console.log(money2text("1234567.00"));
+// console.log(money2text("12345678.00"));
+console.log(money2text("7000.55"));
 
 module.exports = money2text
