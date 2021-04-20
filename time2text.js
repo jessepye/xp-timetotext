@@ -1,16 +1,128 @@
 'use strict'
 
 function time2text (time) {
-  let timeString = "";
 
-  // Get first two character 
+  let timeString = "";
   let hour = time.substring(0, 2);
   let minuteTen = time.substring(3,4);
   let minuteOne = time.substring(4,5);
   let minute = time.substring(3,5);
+  let hourInt = parseInt(hour);
+  let minuteInt = parseInt(minute);
 
-  if (time === "00:00") return "midnight";
+  function prependMinutes() {
+    function increaseHour() {
+      hourInt++;
+      if (hourInt >= 24) {
+        hourInt -= 24;
+      }
+      hour = hourInt.toString();
+      if (hour.length === 1) {
+        hour = "0" + hour;
+      }
+    }
+    if (minute === "05") {
+      timeString += "five past ";
+    } else if (minute === "10") {
+      timeString += "ten past ";
+    } else if (minute === "15") {
+      timeString += "quarter past ";
+    } else if (minute === "20") {
+      timeString += "twenty past ";
+    } else if (minute === "30") {
+      timeString += "half past ";
+    } else if (minute === "40") {
+      timeString += "twenty to ";
+      increaseHour();
+    } else if (minute === "45") {
+      timeString += "quarter to ";
+      increaseHour();
+    } else if (minute === "50") {
+      timeString += "ten to ";
+      increaseHour();
+    } else if (minute === "55") {
+      timeString += "five to ";
+      increaseHour();
+    } else {
+      return false; // no minutes were prepended, returning false
+    }
+    return true; // minutes WERE prepended
+  }
+
+  function appendMinutes() {
+    if (minuteTen === "1" ) {
+      if (minuteOne === "0") {
+        timeString += " ten"
+      } else if (minuteOne === "1") {
+        timeString += " eleven"
+      } else if (minuteOne === "2") {
+        timeString += " twelve"
+      } else if (minuteOne === "3") {
+      timeString += " thirteen"
+      } else if (minuteOne === "4") {
+        timeString += " fourteen"
+      } else if (minuteOne === "5") {
+        timeString += " fifteen"
+      } else if (minuteOne === "6") {
+        timeString += " sixteen"
+      } else if (minuteOne === "7") {
+        timeString += " seventeen"
+      } else if (minuteOne === "8") {
+        timeString += " eighteen"
+      } else if (minuteOne === "9") {
+        timeString += " nineteen"
+      }
+    } else {
+      if (minuteTen === "2") {
+        timeString += " twenty";
+      } else if (minuteTen === "3") {
+        timeString += " thirty"
+      }else if (minuteTen === "4") {
+        timeString += " fourty"
+      }else if (minuteTen === "5") {
+        timeString += " fifty"
+      } else if (minuteTen === "0" && minuteOne !== "0") {
+        timeString += " oh"
+      }
+
+      if (minuteTen === "0" && minuteOne === "0") {
+        timeString += " o'clock";
+      }
+
+      if (!timeString.includes("o'clock")) {
+        if (timeString.includes("oh")) {
+          timeString += " ";
+        } else {
+          timeString += "-";
+        }
+      }
+
+      if (minuteOne === "1") {
+        timeString += "one"
+      } else if (minuteOne === "2") {
+        timeString += "two"
+      }else if (minuteOne === "3") {
+        timeString += "three"
+      }else if (minuteOne === "4") {
+        timeString += "four"
+      }else if (minuteOne === "5") {
+        timeString += "five"
+      }else if (minuteOne === "6") {
+        timeString += "six"
+      }else if (minuteOne === "7") {
+        timeString += "seven"
+      }else if (minuteOne === "8") {
+        timeString += "eight"
+      }else if (minuteOne === "9") {
+        timeString += "nine"
+      }
+    }
+  }
+
+  if (time === "00:00" || time === "24:00") return "midnight";
   if (time === "12:00") return "noon";
+
+  let minutesWerePrepended = prependMinutes();
 
   if (hour === "01" || hour === "13") {
     timeString += "one";
@@ -35,102 +147,37 @@ function time2text (time) {
   } else if (hour === "11" || hour === "23") {
     timeString += "eleven"
   } else if (hour === "12" || hour === "00" ) {
-    timeString += "twelve"
-  } 
-
-  if (minuteTen === "1" ) {
-    if (minuteOne === "0") {
-      timeString += " ten"
-    } else if (minuteOne === "1") {
-      timeString += " eleven"
-    } else if (minuteOne === "2") {
-      timeString += " twelve"
-    } else if (minuteOne === "3") {
-    timeString += " thirteen"
-    } else if (minuteOne === "4") {
-      timeString += " fourteen"
-    } else if (minuteOne === "5") {
-      timeString += " fifteen"
-    } else if (minuteOne === "6") {
-      timeString += " sixteen"
-    } else if (minuteOne === "7") {
-      timeString += " seventeen"
-    } else if (minuteOne === "8") {
-      timeString += " eighteen"
-    } else if (minuteOne === "9") {
-      timeString += " nineteen"
-    }
-  } else {
-    if (minuteTen === "2") {
-      timeString += " twenty";
-    } else if (minuteTen === "3") {
-      timeString += " thirty"
-    }else if (minuteTen === "4") {
-      timeString += " fourty"
-    }else if (minuteTen === "5") {
-      timeString += " fifty"
-    } else if (minuteTen === "0" && minuteOne !== "0") {
-      timeString += " oh"
-    }
-
-    if (minuteTen === "0" && minuteOne === "0") {
-      timeString += " o'clock";
-    }
-  
-    if (minuteOne === "1") {
-      timeString += "-one"
-    } else if (minuteOne === "2") {
-      timeString += "-two"
-    }else if (minuteOne === "3") {
-      timeString += "-three"
-    }else if (minuteOne === "4") {
-      timeString += "-four"
-    }else if (minuteOne === "5") {
-      timeString += "-five"
-    }else if (minuteOne === "6") {
-      timeString += "-six"
-    }else if (minuteOne === "7") {
-      timeString += "-seven"
-    }else if (minuteOne === "8") {
-      timeString += "-eight"
-    }else if (minuteOne === "9") {
-      timeString += "-nine"
+    if (minutesWerePrepended) {
+      if (hour === "00") {
+        timeString += "midnight";
+      } else {
+        timeString += "noon";
+      }
+    } else {
+      timeString += "twelve";
     }
   }
 
-  let hourInt = parseInt(hour);
-  let minuteInt = parseInt(minute);
-  if (hourInt >= 0 && hourInt < 12){
-    if (hourInt !== 0 || (hourInt === 0 && minuteInt !== 0)) {
-      timeString += " in the morning"
-    } 
-  } else if (hourInt >= 12 && hourInt <= 17) {
-    if (hourInt !== 12 || (hourInt === 12 && minuteInt !== 0)) {
-      timeString += " in the afternoon"
-    }
-  } else {
-    timeString += " in the evening"
+  if (!minutesWerePrepended) {
+    appendMinutes();
   }
 
-  
+  if(!timeString.includes("midnight") && !timeString.includes("noon")) { // !true || !false
+    if (hourInt >= 0 && hourInt < 12){
+      if (hourInt !== 0 || (hourInt === 0 && minuteInt !== 0)) {
+        timeString += " in the morning"
+      }
+    } else if (hourInt >= 12 && hourInt <= 17) {
+      if (hourInt !== 12 || (hourInt === 12 && minuteInt !== 0)) {
+        timeString += " in the afternoon"
+      }
+    } else {
+      timeString += " in the evening"
+    }
+  }
 
   return timeString;
-  
-
 }
 
-
-// morning + evenings 
-  // midnight - 00:00 
-  // morning  >= 00:01  <=11:59
-  // 12:00 -> noon
-  // 12:01 - 17:59 -> afternoon 
-  // 18:00 - 23:59  ->   evening 
-
-// Consider combinations of the above rules (e.g. '11:55' should result in 'five to noon').
-
-// "time":"00:00","text":"midnight" 
-// "time":"12:00","text":"noon"
-
-// console.log(time2text("20:04"))
+// console.log(time2text("23:50"));
 module.exports = time2text
